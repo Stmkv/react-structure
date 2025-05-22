@@ -1,54 +1,102 @@
-# React + TypeScript + Vite
+### Проект: **Frontend (React + TypeScript + React Router + React Query)**
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Стиль организации: **Atomic Design + feature-first + масштабируемость**
+Может быть связан с бэкендом на **FastAPI**
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 📁 src/
 
-## Expanding the ESLint configuration
+Корневая папка исходного кода React-приложения.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+---
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+### 📁 assets/
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Статические файлы, которые не обрабатываются как React-компоненты.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- `fonts/` — кастомные шрифты (`.woff2`, `.ttf`)
+- `images/` — иконки, иллюстрации и другие изображения (`.svg`, `.png`)
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+---
+
+### 📁 components/
+
+UI-компоненты, организованные по **Atomic Design**:
+
+- `atoms/` — атомарные, переиспользуемые компоненты (например, `Button`, `Input`, `Label`)
+- `molecules/` — составные элементы интерфейса, включающие несколько атомов (например, `InputWithLabel`)
+- `organisms/` — сложные модули интерфейса, объединяющие молекулы (например, `Header`, `Sidebar`)
+- `templates/` — шаблоны страниц и лэйаутов (например, `AuthLayout`, `DashboardLayout`)
+
+> 💡 Каждый компонент может иметь собственную папку с файлами `.tsx`, `.module.css` и `index.ts`.
+
+---
+
+### 📁 lib/
+
+Инфраструктурная логика и утилиты, не зависящие от UI.
+
+- `constants/` — глобальные константы, например: API URL, enum-значения и пр.
+- `helpers/` — функции-помощники (например, форматтеры дат, функций сортировки)
+- `hooks/` — переиспользуемые кастомные хуки (`useDebounce`, `useAuth`)
+- `store/` — глобальное состояние (Redux, Zustand, Jotai)
+- `types/` — глобальные типы и интерфейсы TypeScript, например:
+
+  - `User`, `Product`, `ApiResponse<T>`
+  - Также здесь можно синхронизировать типы с FastAPI через генерацию
+
+---
+
+### 📁 pages/
+
+Файлы страниц, которые отображаются через маршрутизацию (React Router).Могут использовать компоненты, layout'ы и бизнес-логику.
+
+- Например:
+
+  - `LoginPage.tsx`
+  - `DashboardPage.tsx`
+- `App.tsx` — основа всего приложения (инициализация роутера, обертки провайдеров и лэйаутов)
+
+---
+
+### 📁 routes/
+
+Централизованное определение маршрутов для `react-router-dom`.
+
+- `routes.tsx` — здесь прописываются все маршруты (возможно с авторизацией, лэйаутами, вложенными путями)
+
+---
+
+### 📁 services/
+
+Интеграция с внешними API (например, FastAPI). Слои разделены по доменам.
+
+- `products/`
+
+  - `queries.ts` — React Query `useQuery` функции для получения данных
+  - `mutations.ts` — React Query `useMutation` для POST/PUT/DELETE
+  - `api.ts` — функции, которые используют `fetch`/`axios`
+  - `keys.ts` — ключи для кэширования React Query
+
+> 🔄 Связано с FastAPI endpoint'ами. Здесь может использоваться axios или fetch.
+
+---
+
+### 📁 styles/
+
+Стили, общие для всего приложения.
+
+- `globals.css` — глобальные сбросы стилей (reset/normalize), Tailwind directives и кастомные переменные
+
+---
+
+### 📄 index.tsx
+
+Точка входа в приложение — монтирует React-приложение в DOM, подключает роутинг и глобальные стили.
+
+---
+
+### 📄 .env.local
+
+Файл окружения (например, `VITE_API_URL=http://localhost:8000`) — нужен для работы с FastAPI API или другими переменными среды.
